@@ -1,6 +1,6 @@
 import React from "react";
 import { Routes, Route } from "react-router-dom";
-import UploadPage from "./pages/UploadPage.jsx";
+import UploadPage from "./pages/uploadPage.jsx";
 import DocumentsPage from "./pages/DocumentsPage.jsx";
 import Navbar from "./components/Navbar.jsx";
 

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import api from "../api";
 import Sidebar from "../components/Sidebar.jsx";
 import PdfViewer from "../components/PdfViewer.jsx";
@@ -9,20 +10,28 @@ export default function DocumentsPage() {
   const [documents, setDocuments] = useState([]);
   const [selected, setSelected] = useState(null);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate(); // Initialize navigate
 
   useEffect(() => {
     (async () => {
       try {
         const res = await api.get("/");
-        setDocuments(res.data);
-        if (res.data.length > 0) setSelected(res.data[0]);
+        if (res.data.length > 0)
+          {
+            setDocuments(res.data);
+            setSelected(res.data[0]);
+          } 
+        else {
+          // If no documents exist, navigate back to the UploadFilePage
+          navigate("/", { state: { message: "No existing uploaded documents" } });
+        }
       } catch (error) {
         console.error("Failed to fetch documents:", error);
       } finally {
         setLoading(false); // Stop loading after data is fetched
       }
     })();
-  }, []);
+  }, [navigate]); // Add navigate to dependencies to avoid potential issues
 
   const refreshDoc = async (id) => {
     const res = await api.get(`/${id}`);
@@ -56,7 +65,7 @@ export default function DocumentsPage() {
               overflow: "auto",
             }}
           >
-            <PdfViewer fileUrl={`http://localhost:3000${selected.fileUrl}`} />
+            <PdfViewer fileUrl={`http://localhost:3000${selected.signature?.fileUrl || selected.fileUrl}`} />
           </div>
 
           <div

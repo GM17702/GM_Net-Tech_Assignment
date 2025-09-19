@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import api from "../api.js";
 import UploadProgressBar from "../components/uploadProgressBar.jsx";
 
@@ -7,6 +7,17 @@ export default function UploadPage() {
   const [file, setFile] = useState(null);
   const [progress, setProgress] = useState(0);
   const navigate = useNavigate();
+  const location = useLocation(); // To access state from navigate
+
+  // Retrieve message passed via navigate from DocumentsPage
+  const message = location.state?.message;
+
+  // Show alert only once when the component mounts
+  useEffect(() => {
+    if (message) {
+      alert(message);
+    }
+  }, [message]); // The effect runs only when 'message' changes
 
   const handleUpload = async () => {
     if (!file) return;
@@ -99,19 +110,19 @@ export default function UploadPage() {
         <button
           onClick={handleUpload}
           disabled={!file}
-            style={{
-                width: "100%",
-                padding: "12px 0",
-                fontSize: 16,
-                fontWeight: "600",
-                color: file ? "#fff" : "#aaa",
-                backgroundColor: file ? "#28a745" : "#e0e0e0",
-                border: "none",
-                borderRadius: 6,
-                cursor: file ? "pointer" : "not-allowed",
-                boxShadow: file ? "0 3px 8px rgba(40,167,69,0.5)" : "none",
-                transition: "background-color 0.3s ease, color 0.3s ease",
-            }}
+          style={{
+            width: "100%",
+            padding: "12px 0",
+            fontSize: 16,
+            fontWeight: "600",
+            color: file ? "#fff" : "#aaa",
+            backgroundColor: file ? "#28a745" : "#e0e0e0",
+            border: "none",
+            borderRadius: 6,
+            cursor: file ? "pointer" : "not-allowed",
+            boxShadow: file ? "0 3px 8px rgba(40,167,69,0.5)" : "none",
+            transition: "background-color 0.3s ease, color 0.3s ease",
+          }}
           onMouseEnter={(e) => {
             if (file) e.currentTarget.style.backgroundColor = "#218838";
           }}

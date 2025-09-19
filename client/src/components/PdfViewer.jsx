@@ -8,7 +8,7 @@ pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/b
 export default function PdfViewer({ fileUrl }) {
   const [numPages, setNumPages] = React.useState(null);
 
-  // console.log("PDF URL being loaded:", fileUrl); 
+  console.log("PDF URL being loaded:", fileUrl); 
   return (
     <div
       style={{
