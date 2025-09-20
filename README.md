@@ -15,9 +15,8 @@ This repository contains a full-stack application that allows uploading PDFs, ad
 
 ### Prerequisites
 
-- Node.js >= 16
-- npm >= 8
-- MongoDB instance running locally or remotely
+- Node.js >= 22
+- npm >= 10.9
 
 ### Backend Setup
 
@@ -37,7 +36,7 @@ npm install
 
 ```
 PORT=Backend Port
-MONGO_URI=your_mongodb_connection_string
+MONGO_URI=mongodb_connection_string
 SMTP_API_KEY=Smtp API Key
 SMTP_API_SECRET=Smtp API Secret
 ```
