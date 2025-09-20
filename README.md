@@ -171,19 +171,19 @@ Base URL: `http://localhost:3000/api/documents`
 ### Upload PDF (using curl)
 
 ```bash
-curl -X POST http://localhost:3000/api/pdf/uploadPDF   -F "file=@/path/to/yourfile.pdf"
+curl -X POST http://localhost:3000/api/documents/uploadPDF   -F "file=@/path/to/yourfile.pdf"
 ```
 
 ### Upload Signature (using curl)
 
 ```bash
-curl -X POST http://localhost:3000/api/pdf/uploadSignature/<documentId>   -F "file=@/path/to/signature.png"
+curl -X POST http://localhost:3000/api/documents/uploadSignature/<documentId>   -F "file=@/path/to/signature.png"
 ```
 
 ### Send Signed PDF Email
 
 ```bash
-curl -X POST http://localhost:3000/api/pdf/sendPDFEmail/<documentId>   -H "Content-Type: application/json"   -d '{"email":"recipient@example.com"}'
+curl -X POST http://localhost:3000/api/documents/sendPDFEmail/<documentId>   -H "Content-Type: application/json"   -d '{"email":"recipient@example.com"}'
 ```
 
 ---
