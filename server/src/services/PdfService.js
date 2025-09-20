@@ -4,6 +4,7 @@ const pdfParse = require('pdf-parse');
 const Document = require('../models/Document');
 const { PDFDocument, rgb, StandardFonts } = require('pdf-lib');
 const { summarize } = require('../utils/summarizer');
+const { sendSignedPdf } = require('../utils/emailing');
 
 const uploadsDir = path.join(__dirname, '..', '..', 'uploads');
 
@@ -91,16 +92,17 @@ const uploadSignature = async (req) => {
       : await pdfDoc.embedJpg(signatureImageBytes);
 
     // Compute image size and position
-    const imgWidth = width * 0.4; // smaller width, left side
+    const imgWidth = width * 0.4;
     const imgHeight = (signatureImage.height / signatureImage.width) * imgWidth;
-    const marginLeft = width * 0.1; // 10% of page width
-    const yImage = (height - imgHeight) / 2 - 40; // push up a bit for text
+    const marginLeft = width * 0.05; // 10% of page width
+    // const yImage = (height - imgHeight) / 2  + 20;
+    const yValue = height - 50;
 
     // Draw label text above the signature
     const font = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
     signaturePage.drawText('Signature:', {
       x: marginLeft,
-      y: yImage + imgHeight + 20,
+      y: yValue,
       size: 18,
       color: rgb(0, 0, 0),
       font,
@@ -109,7 +111,7 @@ const uploadSignature = async (req) => {
     // Draw signature image itself
     signaturePage.drawImage(signatureImage, {
       x: marginLeft,
-      y: yImage,
+      y: yValue - imgHeight - 10, // 10 units below the text
       width: imgWidth,
       height: imgHeight,
     });
@@ -202,4 +204,20 @@ const getDocumentById = async (id) => {
     }
 };
 
-module.exports = { uploadAndParsePDF, getDocuments, getDocumentById, uploadSignature, deleteSignature };
+const sendSignedPDFEmail = async (docId, email) => {
+  try {
+    const doc = await Document.findById(docId);
+    if (!doc) throw new Error('Document not found');
+
+    if (!doc.signature || !doc.signature.filePath) {
+      throw new Error('No signed PDF available to send');
+    }
+
+    await sendSignedPdf(email, doc.signature.filePath);
+  } catch (err) {
+    console.error('Error in sendSignedPDFEmail:', err);
+    throw err;
+  }
+};
+
+module.exports = { uploadAndParsePDF, getDocuments, getDocumentById, uploadSignature, deleteSignature, sendSignedPDFEmail };

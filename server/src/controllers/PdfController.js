@@ -1,5 +1,5 @@
 
-const { uploadAndParsePDF, getDocuments, getDocumentById, uploadSignature, deleteSignature } = require('../services/PdfService');
+const { uploadAndParsePDF, getDocuments, getDocumentById, uploadSignature, deleteSignature, sendSignedPDFEmail } = require('../services/PdfService');
 
 
 async function pdfUpload(req, res) {
@@ -30,6 +30,24 @@ async function SignatureUpload(req, res) {
   } catch (err) {
     console.error('Signature Upload error: ', err);
     return res.status(400).json({ error: 'Signature upload failed: ' + err.message || '' });
+  }
+}
+
+async function SendPDFEmail(req, res) {
+  try 
+  {
+
+    //Verify email is valid
+    if (!req.body.email || !req.body.email.includes('@')) {
+      return res.status(400).json({ error: 'Invalid email address' });
+    }
+    
+    await sendSignedPDFEmail(req.params.id, req.body.email);
+    return res.status(200).json({ message: 'Email sent successfully' });
+
+  } catch (err) {
+    console.error('Send PDF Email error: ', err);
+    return res.status(400).json({ error: 'Send PDF Email failed: ' + err.message || '' });
   }
 }
 
@@ -70,4 +88,4 @@ async function getDocument(req, res) {
 }
 
 
-module.exports = { pdfUpload, getDocument, getAllDocuments, SignatureUpload, SignatureDeletion };
+module.exports = { pdfUpload, getDocument, getAllDocuments, SignatureUpload, SignatureDeletion, SendPDFEmail };

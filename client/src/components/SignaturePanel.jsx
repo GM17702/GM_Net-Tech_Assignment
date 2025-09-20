@@ -165,6 +165,75 @@ const deleteSignature = async () => {
           >
             Delete Signature
           </button>
+          <div
+              style={{
+                display: "flex",
+                gap: "10px",
+                marginTop: "10px",
+                marginBottom: "10px",
+                alignItems: "flex-start",  // Align buttons to the top of the container
+              }}
+              >
+
+              <button
+                onClick={() => {
+                  const link = document.createElement("a");
+                  const fileUrl = `http://localhost:3000${pdfData.signature.fileUrl}`;
+
+                  // Set the link to point directly to the file
+                  link.href = fileUrl;
+                  link.target = "_blank";  // Open in new tab/window
+
+                  // Extract the filename from the URL (last part of the file path)
+                  const filename = pdfData.signature.fileUrl.split("/").pop();
+                  link.download = filename;  // This tells the browser to download the file
+
+                  // Trigger the download by clicking the link
+                  link.style.display = "none";  // Hide the link (it won’t be visible on the page)
+                  document.body.appendChild(link);  // Add it to the DOM
+                  link.click();  // Simulate a click to start the download
+                  document.body.removeChild(link);  // Clean up by removing the link from the DOM
+                }}
+                style={{
+                  backgroundColor: "#007bff",
+                  color: "#fff",
+                  border: "none",
+                  padding: "8px 16px",
+                  borderRadius: "5px",
+                  cursor: "pointer",
+                }}
+              >
+                Download Signed PDF
+              </button>
+
+              <button
+                onClick={async () => {
+                  const recipient = window.prompt("Enter recipient email:");
+                  if (!recipient) return;
+
+                  try {
+                    // Call your backend API endpoint to send the email
+                    await api.post(`/sendPDFEmail/${pdfData._id}`, {
+                      email: recipient,
+                    });
+                    alert("Email sent successfully!");
+                  } catch (err) {
+                    console.error("Error sending email:", err);
+                    alert("Failed to send email: " + err.response?.data?.error || err.response?.data?.message);
+                  }
+                }}
+                style={{
+                  backgroundColor: "#28a745",
+                  color: "#fff",
+                  border: "none",
+                  padding: "8px 16px",
+                  borderRadius: "5px",
+                  cursor: "pointer",
+                }}
+              >
+                Share via Email
+              </button>
+            </div>
         </div>
       ) : (
         <>

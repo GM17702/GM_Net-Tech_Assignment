@@ -5,7 +5,8 @@ const {
   getDocument,
   getAllDocuments,
   SignatureUpload,
-  SignatureDeletion
+  SignatureDeletion,
+  SendPDFEmail
 } = require('../controllers/PdfController');
 
 const router = express.Router();
@@ -17,5 +18,8 @@ router.post('/uploadSignature/:id', uploadSignature.single('file'), SignatureUpl
 router.get('/:id', getDocument);
 router.get('/', getAllDocuments);
 router.delete('/deleteSignature/:id', SignatureDeletion);
+
+// Send signed PDF via email
+router.post('/sendPDFEmail/:id', SendPDFEmail);
 
 module.exports = router;
